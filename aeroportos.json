@@ -130,5 +130,13 @@
   {
     "Cidade": "Vitória",
     "IATA": "VIX"
+  },
+  {
+    "Cidade": "São José Do Rio Preto",
+    "IATA": "SJP"
+  },
+  {
+    "Cidade": "Foz Do Iguaçu",
+    "IATA": "IGU"
   }
 ]
