@@ -1,49 +1,9 @@
-import sys
-from dataclasses import dataclass
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QLineEdit, QTextEdit, QPushButton, QCheckBox, QGridLayout, QVBoxLayout, QMessageBox, QDateEdit, QTimeEdit, QLabel
 )
 from PyQt6.QtCore import QDate
 
-# ----------------- DATACLASS -------------------
-
-@dataclass
-class Onibus:
-    origem: str
-    destino: str
-    data_ida: str
-    saida_ida: str
-    chegada_ida: str
-    data_volta: str = ""
-    saida_volta: str = ""
-    chegada_volta: str = ""
-    somente_ida: bool = False
-    valor: str = ""
-    
-    def gerar_texto(self) -> str:
-        texto = (
-            f"🚌 Segue sua cotação para a sua próxima viagem:\n\n"
-            f"{self.origem} ➡️ {self.destino}\n"
-            f"📅 IDA: {self.data_ida}\n"
-            f"➡ Saída: {self.saida_ida}h | Chegada: {self.chegada_ida}h\n\n"
-        )
-        
-        if not self.somente_ida:
-            texto += (
-                f"📅 VOLTA: {self.data_volta}\n"
-                f"➡ Saída: {self.saida_volta}h | Chegada: {self.chegada_volta}h\n\n"
-            )
-        
-        texto += (
-            f"💰 Valor: R$ {self.valor}\n"
-            f"Valores sujeitos à disponibilidade e alteração sem aviso prévio."
-            )
-        
-        return texto
-
-# ----------------- INTERFACE -------------------
-
-class OnibusWidget(QWidget):
+class Onibus_Ui(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Cotação de Ônibus")
@@ -112,6 +72,7 @@ class OnibusWidget(QWidget):
         self.setLayout(self.layout)
         
     def gerar_cotacao(self):
+        from modelos.onibus_model import Onibus
         cotação = Onibus(
             origem=self.origem_input.text(),
             data_ida=self.data_ida_input.date().toString("dd/MM/yyyy"),
@@ -131,12 +92,3 @@ class OnibusWidget(QWidget):
         clipboard = QApplication.clipboard()
         clipboard.setText(self.resultado_texto.toPlainText())
         QMessageBox.information(self, "Copiado", "Texto copiado com sucesso!")
-        
-        
-# ----------------- EXECUÇÃO -------------------
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    widget = OnibusWidget()
-    widget.show()
-    sys.exit(app.exec())
-    
