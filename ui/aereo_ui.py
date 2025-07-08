@@ -6,15 +6,15 @@ from PyQt6.QtCore import QDate, Qt
 
 class Aereo_Ui(QWidget):
     def __init__(self):
-        from utils.utils import carregar_aeroportos
-        aeroportos = carregar_aeroportos()
+        from utils.utils import carregar_json
+        aeroportos = carregar_json('aeroportos.json')
         
         super().__init__()
         self.setWindowTitle("✈️ Gerador de Cotações Aéreas")
-        self.setMinimumSize(400, 700)
+        self.setMinimumSize(400, 775)
 
         self.layout = QVBoxLayout()
-        self.grid = QGridLayout()
+        grid_layout = QGridLayout()
         
         # --------- INPUTS ORIGEM ----------
         
@@ -55,46 +55,43 @@ class Aereo_Ui(QWidget):
         self.IATA = QLineEdit(); self.IATA.setPlaceholderText("IATA")
 
         # -------- BOTÕES ----------
-        btn_gerar = QPushButton("✈️ Gerar Cotação"); btn_gerar.clicked.connect(self.gerar_cotacao)
+        self.btn_gerar = QPushButton("✈️ Gerar Cotação"); self.btn_gerar.clicked.connect(self.gerar_cotacao)
         
-        btn_copiar = QPushButton("📋 Copiar Texto"); btn_copiar.clicked.connect(self.copiar_texto)
+        self.btn_copiar = QPushButton("📋 Copiar Texto"); self.btn_copiar.clicked.connect(self.copiar_texto); self.btn_copiar.setObjectName('btn_copiar')
         
-        btn_adicionar = QPushButton("➕ Adicionar Aeroporto"); btn_adicionar.clicked.connect(self.salvar_novo_aeroporto)
-
-       
-        
-        self.aeroporto_volta_label = QLabel('Destino')
+        self.btn_adicionar = QPushButton("➕ Adicionar Aeroporto"); self.btn_adicionar.clicked.connect(self.salvar_novo_aeroporto)
         
         # --------- ORGANIZAÇÃO DO LAYOUT ----------
         # ---------         ORIGEM        ---------- 
-        self.grid.addWidget(QLabel('Origem'), 0, 0) # Label Origem
-        self.grid.addWidget(self.origem, 1, 0)      # ComboBox Origem   
-        self.grid.addWidget(self.data_ida, 2, 0)    # Data de Ida
-        self.grid.addWidget(self.hora_ida, 3, 0)    # Hora de Ida
-        self.grid.addWidget(self.chegada_ida, 4, 0) # Chegada de Ida
-        self.grid.addWidget(self.paradas_ida, 5, 0) # Paradas de Ida
+        grid_layout.addWidget(QLabel('Origem'), 0, 0) # Label Origem
+        grid_layout.addWidget(self.origem, 1, 0)      # ComboBox Origem   
+        grid_layout.addWidget(self.data_ida, 2, 0)    # Data de Ida
+        grid_layout.addWidget(self.hora_ida, 3, 0)    # Hora de Ida
+        grid_layout.addWidget(self.chegada_ida, 4, 0) # Chegada de Ida
+        grid_layout.addWidget(self.paradas_ida, 5, 0) # Paradas de Ida
         
         # ---------         DESTINO       ----------
-        self.grid.addWidget(QLabel('Destino'), 0, 1)  # Label Destino
-        self.grid.addWidget(self.destino, 1, 1)       # ComboBox Destino
-        self.grid.addWidget(self.data_volta, 2, 1)    # Data de Volta
-        self.grid.addWidget(self.hora_volta, 3, 1)    # Hora de Volta
-        self.grid.addWidget(self.chegada_volta, 4, 1) # Chegada de Volta
-        self.grid.addWidget(self.paradas_volta, 5, 1) # Paradas de Volta
+        grid_layout.addWidget(QLabel('Destino'), 0, 1)  # Label Destino
+        grid_layout.addWidget(self.destino, 1, 1)       # ComboBox Destino
+        grid_layout.addWidget(self.data_volta, 2, 1)    # Data de Volta
+        grid_layout.addWidget(self.hora_volta, 3, 1)    # Hora de Volta
+        grid_layout.addWidget(self.chegada_volta, 4, 1) # Chegada de Volta
+        grid_layout.addWidget(self.paradas_volta, 5, 1) # Paradas de Volta
 
         # ---------         OUTROS        ----------
-        self.grid.addWidget(self.somente_ida, 6, 0)     # Checkbox Somente Ida
-        self.grid.addWidget(self.bagagem, 6, 1)         # Checkbox Bagagem Despachada
-        self.grid.addWidget(self.valor, 7, 0, 1, 2)     # Valor da Passagem
-        self.grid.addWidget(btn_gerar, 8, 0, 1, 2)      # Botão Gerar Cotação
-        self.grid.addWidget(self.resultado, 9, 0, 1, 2) # Resultado da Cotação
-        self.grid.addWidget(btn_copiar, 10, 0, 1, 2)    # Botão Copiar Texto
+        grid_layout.addWidget(self.somente_ida, 6, 0)     # Checkbox Somente Ida
+        grid_layout.addWidget(self.bagagem, 6, 1)         # Checkbox Bagagem Despachada
+        grid_layout.addWidget(self.valor, 7, 0, 1, 2)     # Valor da Passagem
+        grid_layout.addWidget(self.btn_gerar, 8, 0, 1, 2)      # Botão Gerar Cotação
+        grid_layout.addWidget(self.resultado, 9, 0, 1, 2) # Resultado da Cotação
+        grid_layout.addWidget(self.btn_copiar, 10, 0, 1, 2)    # Botão Copiar Texto
         
-        self.grid.addWidget(self.aeroporto, 11, 0, 1, 2) # Campo para adicionar novo aeroporto
-        self.grid.addWidget(self.IATA, 12, 0, 1, 2)      # Campo para adicionar novo IATA
-        self.grid.addWidget(btn_adicionar, 13, 0, 1, 2)  # Botão para adicionar novo aeroporto
+        # ---------         ADICIONAR AEROPORTO        ----------
+        grid_layout.addWidget(self.aeroporto, 11, 0, 1, 2) # Campo para adicionar novo aeroporto
+        grid_layout.addWidget(self.IATA, 12, 0, 1, 2)      # Campo para adicionar novo IATA
+        grid_layout.addWidget(self.btn_adicionar, 13, 0, 1, 2)  # Botão para adicionar novo aeroporto
 
-        self.layout.addLayout(self.grid)
+        self.layout.addLayout(grid_layout)
         self.setLayout(self.layout)
 
     def gerar_cotacao(self):
@@ -132,7 +129,7 @@ class Aereo_Ui(QWidget):
             QMessageBox.warning(self, 'ERRO', 'Preencha a cidade e um código IATA válido (03 letras).')
             return
         
-        if salvar_aeroporto(cidade, iata):
+        if salvar_aeroporto(cidade, iata, 'aeroportos.json'):
             QMessageBox.information(self, "Sucesso", f"Aeroporto '{cidade.title()} ({iata.upper()})' adicionado!")
             novo_texto = f"{cidade.title()} ({iata.upper()})"
             self.origem.addItem(novo_texto)

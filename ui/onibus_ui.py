@@ -44,7 +44,7 @@ class Onibus_Ui(QWidget):
         
         self.gerar_button = QPushButton("🚌 Gerar Cotação"); self.gerar_button.clicked.connect(self.gerar_cotacao)
         
-        self.copiar_button = QPushButton("📋 Copiar Texto"); self.copiar_button.clicked.connect(self.copiar_texto)
+        self.copiar_button = QPushButton("📋 Copiar Texto"); self.copiar_button.clicked.connect(self.copiar_texto); self.copiar_button.setObjectName('btn_copiar')
         
         # ----- Layout -----
         # ----- ORIGEM -----

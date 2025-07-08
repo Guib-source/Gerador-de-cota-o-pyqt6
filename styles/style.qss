@@ -1,0 +1,66 @@
+/* Estilo geral */ 
+QWidget {
+    font-family: "Segoe UI";
+    font-size: 12px;
+    background-color: #f2f2f2;
+}
+
+QLabel {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+}
+
+QPushButton {
+    background-color: #28a745;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+QPushButton:hover {
+    background-color: #218838;
+}
+
+QPushButton:pressed {
+    background-color: #1e7e34;
+}
+
+QCheckBox {
+    font-size: 14px;
+    font-weight: normal;
+    color: #333;
+}
+
+QComboBox, QLineEdit, QTextEdit, QDateEdit, QTimeEdit {
+    background-color: white;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Estilo específico para o botão de copiar */
+QPushButton#btn_copiar {
+    background-color: #007bff;
+}
+
+QPushButton#btn_copiar:hover {
+    background-color: #0056b3;
+}
+
+QPushButton#btn_copiar:pressed {
+    background-color: #004085;
+}
+
+/* Esconder botões de dropdown */ 
+QTimeEdit::up-button, QTimeEdit::down-button {
+    width: 0;
+    height: 0;
+    border: none;
+}
+
+QComboBox::drop-down {
+    width: 0;
+    height: 0;
+    border: none;
+}

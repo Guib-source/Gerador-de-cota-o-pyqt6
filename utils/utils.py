@@ -1,16 +1,16 @@
 import json, os
 from PyQt6.QtWidgets import QMessageBox
 
-def caminho_json():
-    return os.path.join(os.path.dirname(__file__), "..", "data", "aeroportos.json")
+def caminho_json(txt):
+    return os.path.join(os.path.dirname(__file__), "..", "data", txt)
 
-def carregar_aeroportos():
-    with open(caminho_json(), encoding="utf-8") as f:
+def carregar_json(txt):
+    with open(caminho_json(txt), encoding="utf-8") as f:
         dados = json.load(f)
     return [f"{item['Cidade']} ({item['IATA']})" for item in dados]
 
-def salvar_aeroporto(cidade: str, iata: str):
-    caminho = caminho_json()
+def salvar_aeroporto(cidade: str, iata: str, txt: str):
+    caminho = caminho_json(txt)
     with open(caminho, encoding='utf-8') as f:
         dados = json.load(f)
     
