@@ -66,7 +66,7 @@ class Aereo_Ui(QWidget):
         
         # --------- ORGANIZAÇÃO DO LAYOUT ----------
         # ---------         ORIGEM        ---------- 
-        grid_layout.addWidget(QLabel('Origem'), 0, 0) # Label Origem
+        grid_layout.addWidget(QLabel('Origem:'), 0, 0) # Label Origem
         grid_layout.addWidget(self.origem, 1, 0)      # ComboBox Origem   
         grid_layout.addWidget(self.data_ida, 2, 0)    # Data de Ida
         grid_layout.addWidget(self.hora_ida, 3, 0)    # Hora de Ida
@@ -74,7 +74,7 @@ class Aereo_Ui(QWidget):
         grid_layout.addWidget(self.paradas_ida, 5, 0) # Paradas de Ida
         
         # ---------         DESTINO       ----------
-        grid_layout.addWidget(QLabel('Destino'), 0, 1)  # Label Destino
+        grid_layout.addWidget(QLabel('Destino:'), 0, 1)  # Label Destino
         grid_layout.addWidget(self.destino, 1, 1)       # ComboBox Destino
         grid_layout.addWidget(self.data_volta, 2, 1)    # Data de Volta
         grid_layout.addWidget(self.hora_volta, 3, 1)    # Hora de Volta
