@@ -1,7 +1,8 @@
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QLineEdit, QTextEdit, QPushButton, QCheckBox, QGridLayout, QVBoxLayout, QMessageBox, QDateEdit, QTimeEdit, QLabel
 )
-from PyQt6.QtCore import QDate
+from PyQt6.QtCore import QDate, QLocale
+import re
 
 class Onibus_Ui(QWidget):
     def __init__(self):
@@ -36,7 +37,9 @@ class Onibus_Ui(QWidget):
         
         self.somente_ida_checkbox = QCheckBox("Somente Ida")
         
-        self.valor_input = QLineEdit(); self.valor_input.setPlaceholderText("Valor (R$)")
+        self.locale = QLocale(QLocale.Language.Portuguese, QLocale.Country.Brazil)
+        
+        self.valor_input = QLineEdit(); self.valor_input.setPlaceholderText("Valor (R$)"); self.valor_input.textChanged.connect(self.formatar_valor)
         
         self.resultado_texto = QTextEdit(); self.resultado_texto.setReadOnly(True)
         
@@ -92,3 +95,24 @@ class Onibus_Ui(QWidget):
         clipboard = QApplication.clipboard()
         clipboard.setText(self.resultado_texto.toPlainText())
         QMessageBox.information(self, "Copiado", "Texto copiado com sucesso!")
+        
+    def formatar_valor(self):
+        texto = self.valor_input.text()
+        somente_numeros = re.sub(r'\D', '', texto)
+        
+        if not somente_numeros:
+            self.valor_input.blockSignals(True)
+            self.valor_input.setText('0,00')
+            self.valor_input.blockSignals(False)
+            return
+        
+        self.valor_puro = somente_numeros
+        
+        valor = int(somente_numeros) / 100
+        valor_formatado = self.locale.toCurrencyString(valor)
+        
+        self.valor_input.blockSignals(True)
+        self.valor_input.setText(valor_formatado)
+        self.valor_input.blockSignals(False)
+        
+        self.valor_input.setCursorPosition(len(valor_formatado))

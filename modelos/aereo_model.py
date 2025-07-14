@@ -31,7 +31,7 @@ class Aereo:
                 f"📅 VOLTA: {self.data_volta}\n"
                 f"➡ Saída: {self.saida_volta}h | {self.paradas_volta}\n"
                 f"➡ Chegada: {self.chegada_volta}h em {self.origem}\n\n"
-                f"💰 Valor: R$ {self.valor} (ida e volta)\n"
+                f"💰 Valor: {self.valor} (ida e volta)\n"
                 f"🧳 Bagagem: {self.bagagem}\n\n"
                 f"Valores sujeitos à disponibilidade e alteração sem aviso prévio."
             )

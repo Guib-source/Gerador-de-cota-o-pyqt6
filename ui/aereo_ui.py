@@ -2,7 +2,8 @@ from PyQt6.QtWidgets import (
     QApplication, QWidget, QLineEdit, QTextEdit, QPushButton, QCheckBox,
     QComboBox, QGridLayout, QVBoxLayout, QMessageBox, QDateEdit, QTimeEdit, QCompleter, QLabel
 )
-from PyQt6.QtCore import QDate, Qt
+from PyQt6.QtCore import QDate, Qt, QLocale
+import re
 
 class Aereo_Ui(QWidget):
     def __init__(self):
@@ -45,8 +46,10 @@ class Aereo_Ui(QWidget):
         self.somente_ida = QCheckBox("Somente Ida")
         
         self.bagagem = QCheckBox("Bagagem Despachada")
-
-        self.valor = QLineEdit(); self.valor.setPlaceholderText("Valor da Passagem (R$)")
+        
+        self.locale = QLocale(QLocale.Language.Portuguese, QLocale.Country.Brazil)
+        
+        self.valor = QLineEdit(); self.valor.setPlaceholderText("Valor da Passagem (R$)"); self.valor.textChanged.connect(self.formatar_valor)
 
         self.resultado = QTextEdit(); self.resultado.setReadOnly(True)
         
@@ -97,19 +100,19 @@ class Aereo_Ui(QWidget):
     def gerar_cotacao(self):
         from modelos.aereo_model import Aereo
         cotacao = Aereo(
-            origem=self.origem.currentText(),
-            destino=self.destino.currentText(),
-            data_ida=self.data_ida.date().toString("dd/MM/yyyy"),
-            saida_ida=self.hora_ida.text(),
-            chegada_ida=self.chegada_ida.text(),
-            paradas_ida=self.paradas_ida.currentText(),
-            data_volta=self.data_volta.date().toString("dd/MM/yyyy"),
-            saida_volta=self.hora_volta.text(),
-            chegada_volta=self.chegada_volta.text(),
-            paradas_volta=self.paradas_volta.currentText(),
-            somente_ida=self.somente_ida.isChecked(),
-            valor=self.valor.text(),
-            bagagem="Inclui bagagem de mão e bagagem despachada" if self.bagagem.isChecked() else "Inclui somente bagagem de mão (sem bagagem despachada)"
+            origem = self.origem.currentText(),
+            destino = self.destino.currentText(),
+            data_ida = self.data_ida.date().toString("dd/MM/yyyy"),
+            saida_ida = self.hora_ida.text(),
+            chegada_ida = self.chegada_ida.text(),
+            paradas_ida = self.paradas_ida.currentText(),
+            data_volta = self.data_volta.date().toString("dd/MM/yyyy"),
+            saida_volta = self.hora_volta.text(),
+            chegada_volta = self.chegada_volta.text(),
+            paradas_volta = self.paradas_volta.currentText(),
+            somente_ida = self.somente_ida.isChecked(),
+            valor = self.valor.text(),
+            bagagem = "Inclui bagagem de mão e bagagem despachada" if self.bagagem.isChecked() else "Inclui somente bagagem de mão (sem bagagem despachada)"
         )
 
         self.resultado.setPlainText(cotacao.gerar_texto())
@@ -136,3 +139,25 @@ class Aereo_Ui(QWidget):
             self.destino.addItem(novo_texto)
             self.aeroporto.clear()
             self.IATA.clear()
+    
+    def formatar_valor(self):
+        texto = self.valor.text()
+        somente_numeros = re.sub(r'\D', '', texto)
+        
+        if not somente_numeros:
+            self.valor.blockSignals(True)
+            self.valor.setText('0,00')
+            self.valor.blockSignals(False)
+            return
+        
+        self.valor_puro = somente_numeros
+        
+        valor = int(somente_numeros) / 100
+        valor_formatado = self.locale.toCurrencyString(valor)
+        
+        self.valor.blockSignals(True)
+        self.valor.setText(valor_formatado)
+        self.valor.blockSignals(False)
+        
+        self.valor.setCursorPosition(len(valor_formatado))
+        

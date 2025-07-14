@@ -28,7 +28,7 @@ class Onibus:
             )
         
         texto += (
-            f"💰 Valor: R$ {self.valor}\n"
+            f"💰 Valor: {self.valor}\n"
             f"Valores sujeitos à disponibilidade e alteração sem aviso prévio."
             )
         
