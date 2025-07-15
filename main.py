@@ -17,18 +17,23 @@ class MainWindow(QMainWindow):
 
         # Layout principal
         main_layout = QHBoxLayout()
-        container = QWidget()
+        container = QWidget(); container.setObjectName('main_container')
         container.setLayout(main_layout)
         self.setCentralWidget(container)
 
         # Sidebar
-        sidebar = QVBoxLayout()
+        sidebar = QVBoxLayout(); sidebar.setObjectName('sidebar')
         sidebar.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        btn_aereo = QPushButton("Aérea")
-        btn_onibus = QPushButton("Ônibus")
+        btn_aereo = QPushButton("✈️"); btn_aereo.setObjectName('btn_sidebar')
+        btn_onibus = QPushButton("🚌"); btn_onibus.setObjectName('btn_sidebar')
         sidebar.addWidget(btn_aereo)
         sidebar.addWidget(btn_onibus)
+        
+        sidebar_widget = QWidget()
+        sidebar_widget.setObjectName("sidebar")
+        sidebar.setAlignment(Qt.AlignmentFlag.AlignTop)
+        sidebar_widget.setLayout(sidebar)
 
         # Conteúdo principal com QStackedWidget
         self.stack = QStackedWidget()
@@ -38,7 +43,7 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self.onibus_ui)
 
         # Adiciona sidebar e stack no layout principal
-        main_layout.addLayout(sidebar, 1)
+        main_layout.addWidget(sidebar_widget, 1)
         main_layout.addWidget(self.stack, 5)
 
         # Conecta botões

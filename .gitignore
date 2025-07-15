@@ -1,3 +1,9 @@
 /modelos/__pycache__
 /modelos
 /ui/__pycache__
+modelos/__pycache__/aereo_model.cpython-313.pyc
+modelos/__pycache__/onibus_model.cpython-313.pyc
+ui/__pycache__/aereo_ui.cpython-313.pyc
+ui/__pycache__/onibus_ui.cpython-313.pyc
+utils/__pycache__/utils.cpython-313.pyc
+*.pyc
