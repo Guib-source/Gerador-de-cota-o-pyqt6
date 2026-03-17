@@ -138,5 +138,133 @@
   {
     "Cidade": "Foz Do Iguaçu",
     "IATA": "IGU"
+  },
+  {
+    "Cidade": "Navegantes",
+    "IATA": "NVT"
+  },
+  {
+    "Cidade": "Cacoal",
+    "IATA": "OAL"
+  },
+  {
+    "Cidade": "Ponta Pora",
+    "IATA": "PMG"
+  },
+  {
+    "Cidade": "Maringá",
+    "IATA": "MGF"
+  },
+  {
+    "Cidade": "Lima",
+    "IATA": "LIM"
+  },
+  {
+    "Cidade": "Trujillo",
+    "IATA": "TRU"
+  },
+  {
+    "Cidade": "Santa Cruz De La Sierra",
+    "IATA": "VVI"
+  },
+  {
+    "Cidade": "Londrina",
+    "IATA": "LDB"
+  },
+  {
+    "Cidade": "Ribeirão Preto",
+    "IATA": "RAO"
+  },
+  {
+    "Cidade": "New York",
+    "IATA": "JFK"
+  },
+  {
+    "Cidade": "Hong Kong",
+    "IATA": "HKG"
+  },
+  {
+    "Cidade": "Milão",
+    "IATA": "MXP"
+  },
+  {
+    "Cidade": "Shangai",
+    "IATA": "PVG"
+  },
+  {
+    "Cidade": "Juazeiro Do Norte",
+    "IATA": "JDO"
+  },
+  {
+    "Cidade": "Porto",
+    "IATA": "OPO"
+  },
+  {
+    "Cidade": "Uberlandia",
+    "IATA": "UDI"
+  },
+  {
+    "Cidade": "Londres",
+    "IATA": "LHR"
+  },
+  {
+    "Cidade": "Maraba",
+    "IATA": "MAB"
+  },
+  {
+    "Cidade": "Pelotas",
+    "IATA": "PET"
+  },
+  {
+    "Cidade": "Bariloche",
+    "IATA": "BRC"
+  },
+  {
+    "Cidade": "Santiago",
+    "IATA": "SCL"
+  },
+  {
+    "Cidade": "Paris",
+    "IATA": "OTY"
+  },
+  {
+    "Cidade": "Roma",
+    "IATA": "FCO"
+  },
+  {
+    "Cidade": "Buenos Aires",
+    "IATA": "AEP"
+  },
+  {
+    "Cidade": "Puerto Montt",
+    "IATA": "PMC"
+  },
+  {
+    "Cidade": "Paris",
+    "IATA": "CDG"
+  },
+  {
+    "Cidade": "Orlnado",
+    "IATA": "MCO"
+  },
+  {
+    "Cidade": "Assunção",
+    "IATA": "ASU"
+  },
+  {
+    "Cidade": "Tokyo",
+    "IATA": "NRT"
+  },
+  {
+    "Cidade": "Bogota",
+    "IATA": "BOG"
+  },
+  {
+    "Cidade": "Cartagena",
+    "IATA": "CTG"
+  },
+  {
+    "Cidade": "Frankfurt",
+    "IATA": "FRA"
   }
 ]

@@ -21,7 +21,7 @@ class Aereo_Ui(QWidget):
         
         self.origem = QComboBox(); self.origem.addItems(aeroportos); self.origem.setCurrentIndex(-1); self.origem.setEditable(True); self.origem.completer().setCompletionMode(QCompleter.CompletionMode.PopupCompletion); self.origem.completer().setFilterMode(Qt.MatchFlag.MatchContains)
         
-        self.data_ida = QDateEdit(); self.data_ida.setCalendarPopup(True); self.data_ida.setDate(QDate.currentDate())
+        self.data_ida = QDateEdit(); self.data_ida.setCalendarPopup(True); self.data_ida.setDate(QDate.currentDate()); self.data_ida.setDisplayFormat("dd/MM/yyyy")
     
         self.hora_ida = QTimeEdit(); self.hora_ida.setDisplayFormat("HH:mm")
         
@@ -29,17 +29,25 @@ class Aereo_Ui(QWidget):
         
         self.paradas_ida = QComboBox(); self.paradas_ida.addItems(["Direto", "1 Parada", "2 Paradas"])
         
+        self.cia_ida = QLineEdit(); self.cia_ida.setPlaceholderText("Companhia Aérea")
+        
         # --------- INPUTS DESTINO ----------
         
         self.destino = QComboBox(); self.destino.addItems(aeroportos); self.destino.setCurrentIndex(-1); self.destino.setEditable(True); self.destino.completer().setCompletionMode(QCompleter.CompletionMode.PopupCompletion); self.destino.completer().setFilterMode(Qt.MatchFlag.MatchContains)
         
-        self.data_volta = QDateEdit(); self.data_volta.setCalendarPopup(True); self.data_volta.setDate(QDate.currentDate())
+        self.data_volta = QDateEdit(); self.data_volta.setCalendarPopup(True); self.data_volta.setDate(QDate.currentDate()); self.data_volta.setDisplayFormat("dd/MM/yyyy")
 
         self.hora_volta = QTimeEdit(); self.hora_volta.setDisplayFormat("HH:mm")
         
         self.chegada_volta = QTimeEdit(); self.chegada_volta.setDisplayFormat("HH:mm")
 
         self.paradas_volta = QComboBox(); self.paradas_volta.addItems(["Direto", "1 Parada", "2 Paradas"])
+        
+        self.cia_volta = QLineEdit(); self.cia_volta.setPlaceholderText("Companhia Aérea")
+        
+        # ---------- LÓGICA PARA GARANTIR QUE A DATA DE VOLTA SEJA SEMPRE APÓS A DATA DE IDA ----------
+        self.data_ida.dateChanged.connect(self.data_volta.setMinimumDate)
+        self.data_volta.setMinimumDate(self.data_ida.date())
         
         # --------- OUTROS INPUTS ----------
         
@@ -68,31 +76,34 @@ class Aereo_Ui(QWidget):
         # ---------         ORIGEM        ---------- 
         grid_layout.addWidget(QLabel('Origem:'), 0, 0) # Label Origem
         grid_layout.addWidget(self.origem, 1, 0)      # ComboBox Origem   
-        grid_layout.addWidget(self.data_ida, 2, 0)    # Data de Ida
-        grid_layout.addWidget(self.hora_ida, 3, 0)    # Hora de Ida
-        grid_layout.addWidget(self.chegada_ida, 4, 0) # Chegada de Ida
-        grid_layout.addWidget(self.paradas_ida, 5, 0) # Paradas de Ida
+        grid_layout.addWidget(self.cia_ida, 2, 0)         # Companhia Aérea
+        grid_layout.addWidget(self.data_ida, 3, 0)    # Data de Ida
+        grid_layout.addWidget(self.hora_ida, 4, 0)    # Hora de Ida
+        grid_layout.addWidget(self.chegada_ida, 5, 0) # Chegada de Ida
+        grid_layout.addWidget(self.paradas_ida, 6, 0) # Paradas de Ida
+        
         
         # ---------         DESTINO       ----------
         grid_layout.addWidget(QLabel('Destino:'), 0, 1)  # Label Destino
         grid_layout.addWidget(self.destino, 1, 1)       # ComboBox Destino
-        grid_layout.addWidget(self.data_volta, 2, 1)    # Data de Volta
-        grid_layout.addWidget(self.hora_volta, 3, 1)    # Hora de Volta
-        grid_layout.addWidget(self.chegada_volta, 4, 1) # Chegada de Volta
-        grid_layout.addWidget(self.paradas_volta, 5, 1) # Paradas de Volta
+        grid_layout.addWidget(self.cia_volta, 2, 1)         # Companhia Aérea Volta
+        grid_layout.addWidget(self.data_volta, 3, 1)    # Data de Volta
+        grid_layout.addWidget(self.hora_volta, 4, 1)    # Hora de Volta
+        grid_layout.addWidget(self.chegada_volta, 5, 1) # Chegada de Volta
+        grid_layout.addWidget(self.paradas_volta, 6, 1) # Paradas de Volta
 
         # ---------         OUTROS        ----------
-        grid_layout.addWidget(self.somente_ida, 6, 0)     # Checkbox Somente Ida
-        grid_layout.addWidget(self.bagagem, 6, 1)         # Checkbox Bagagem Despachada
-        grid_layout.addWidget(self.valor, 7, 0, 1, 2)     # Valor da Passagem
-        grid_layout.addWidget(self.btn_gerar, 8, 0, 1, 2)      # Botão Gerar Cotação
-        grid_layout.addWidget(self.resultado, 9, 0, 1, 2) # Resultado da Cotação
-        grid_layout.addWidget(self.btn_copiar, 10, 0, 1, 2)    # Botão Copiar Texto
+        grid_layout.addWidget(self.somente_ida, 7, 0)     # Checkbox Somente Ida
+        grid_layout.addWidget(self.bagagem, 7, 1)         # Checkbox Bagagem Despachada
+        grid_layout.addWidget(self.valor, 8, 0, 1, 2)     # Valor da Passagem
+        grid_layout.addWidget(self.btn_gerar, 9, 0, 1, 2)      # Botão Gerar Cotação
+        grid_layout.addWidget(self.resultado, 10, 0, 1, 2) # Resultado da Cotação
+        grid_layout.addWidget(self.btn_copiar, 11, 0, 1, 2)    # Botão Copiar Texto
         
         # ---------         ADICIONAR AEROPORTO        ----------
-        grid_layout.addWidget(self.aeroporto, 11, 0, 1, 2) # Campo para adicionar novo aeroporto
-        grid_layout.addWidget(self.IATA, 12, 0, 1, 2)      # Campo para adicionar novo IATA
-        grid_layout.addWidget(self.btn_adicionar, 13, 0, 1, 2)  # Botão para adicionar novo aeroporto
+        grid_layout.addWidget(self.aeroporto, 12, 0, 1, 2) # Campo para adicionar novo aeroporto
+        grid_layout.addWidget(self.IATA, 13, 0, 1, 2)      # Campo para adicionar novo IATA
+        grid_layout.addWidget(self.btn_adicionar, 14, 0, 1, 2)  # Botão para adicionar novo aeroporto
 
         self.layout.addLayout(grid_layout)
         self.setLayout(self.layout)
@@ -112,6 +123,8 @@ class Aereo_Ui(QWidget):
             paradas_volta = self.paradas_volta.currentText(),
             somente_ida = self.somente_ida.isChecked(),
             valor = self.valor.text(),
+            cia_ida = self.cia_ida.text(),
+            cia_volta = self.cia_volta.text(),
             bagagem = "Inclui bagagem de mão e bagagem despachada" if self.bagagem.isChecked() else "Inclui somente bagagem de mão (sem bagagem despachada)"
         )
 

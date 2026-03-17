@@ -17,7 +17,7 @@ class Onibus_Ui(QWidget):
         
         self.origem_input = QLineEdit(); self.origem_input.setPlaceholderText("Origem")
         
-        self.data_ida_input = QDateEdit(); self.data_ida_input.setCalendarPopup(True); self.data_ida_input.setDate(QDate.currentDate())
+        self.data_ida_input = QDateEdit(); self.data_ida_input.setCalendarPopup(True); self.data_ida_input.setDate(QDate.currentDate()); self.data_ida_input.setDisplayFormat("dd/MM/yyyy")
         
         self.saida_ida_input = QTimeEdit(); self.saida_ida_input.setDisplayFormat("HH:mm")
         
@@ -27,7 +27,7 @@ class Onibus_Ui(QWidget):
         
         self.destino_input = QLineEdit(); self.destino_input.setPlaceholderText("Destino")
         
-        self.data_volta_input = QDateEdit(); self.data_volta_input.setCalendarPopup(True); self.data_volta_input.setDate(QDate.currentDate())
+        self.data_volta_input = QDateEdit(); self.data_volta_input.setCalendarPopup(True); self.data_volta_input.setDate(QDate.currentDate()); self.data_volta_input.setDisplayFormat("dd/MM/yyyy")
         
         self.saida_volta_input = QTimeEdit(); self.saida_volta_input.setDisplayFormat("HH:mm")
         
