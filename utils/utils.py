@@ -2,7 +2,7 @@ import json, os
 from PyQt6.QtWidgets import QMessageBox
 
 def caminho_json(txt):
-    return os.path.join(os.path.dirname(__file__), "..", "data", txt)
+    return os.path.join(os.path.dirname(__file__), "..", txt)
 
 def carregar_json(txt):
     with open(caminho_json(txt), encoding="utf-8") as f:

@@ -1,176 +1,240 @@
-from PyQt6.QtWidgets import (
-    QApplication, QWidget, QLineEdit, QTextEdit, QPushButton, QCheckBox,
-    QComboBox, QGridLayout, QVBoxLayout, QMessageBox, QDateEdit, QTimeEdit, QCompleter, QLabel
-)
-from PyQt6.QtCore import QDate, Qt, QLocale
 import re
 
+from PyQt6.QtWidgets import (
+    QApplication, QWidget, QLineEdit, QTextEdit, QPushButton, QCheckBox,
+    QComboBox, QGridLayout, QVBoxLayout, QMessageBox, QDateEdit, QTimeEdit,
+    QCompleter, QLabel, QGroupBox, QSpinBox
+)
+
+from PyQt6.QtCore import QDate, Qt, QLocale
+
+from utils.utils import carregar_json, salvar_aeroporto
+from modelos.aereo_model import Aereo
+
+
 class Aereo_Ui(QWidget):
+
     def __init__(self):
-        from utils.utils import carregar_json
-        aeroportos = carregar_json('aeroportos.json')
-        
         super().__init__()
-        self.setWindowTitle("✈️ Gerador de Cotações Aéreas")
-        self.setMinimumSize(400, 775)
 
-        self.layout = QVBoxLayout()
-        grid_layout = QGridLayout()
-        
-        # --------- INPUTS ORIGEM ----------
-        
-        self.origem = QComboBox(); self.origem.addItems(aeroportos); self.origem.setCurrentIndex(-1); self.origem.setEditable(True); self.origem.completer().setCompletionMode(QCompleter.CompletionMode.PopupCompletion); self.origem.completer().setFilterMode(Qt.MatchFlag.MatchContains)
-        
-        self.data_ida = QDateEdit(); self.data_ida.setCalendarPopup(True); self.data_ida.setDate(QDate.currentDate()); self.data_ida.setDisplayFormat("dd/MM/yyyy")
-    
-        self.hora_ida = QTimeEdit(); self.hora_ida.setDisplayFormat("HH:mm")
-        
-        self.chegada_ida = QTimeEdit(); self.chegada_ida.setDisplayFormat("HH:mm")
-        
-        self.paradas_ida = QComboBox(); self.paradas_ida.addItems(["Direto", "1 Parada", "2 Paradas"])
-        
-        self.cia_ida = QLineEdit(); self.cia_ida.setPlaceholderText("Companhia Aérea")
-        
-        # --------- INPUTS DESTINO ----------
-        
-        self.destino = QComboBox(); self.destino.addItems(aeroportos); self.destino.setCurrentIndex(-1); self.destino.setEditable(True); self.destino.completer().setCompletionMode(QCompleter.CompletionMode.PopupCompletion); self.destino.completer().setFilterMode(Qt.MatchFlag.MatchContains)
-        
-        self.data_volta = QDateEdit(); self.data_volta.setCalendarPopup(True); self.data_volta.setDate(QDate.currentDate()); self.data_volta.setDisplayFormat("dd/MM/yyyy")
-
-        self.hora_volta = QTimeEdit(); self.hora_volta.setDisplayFormat("HH:mm")
-        
-        self.chegada_volta = QTimeEdit(); self.chegada_volta.setDisplayFormat("HH:mm")
-
-        self.paradas_volta = QComboBox(); self.paradas_volta.addItems(["Direto", "1 Parada", "2 Paradas"])
-        
-        self.cia_volta = QLineEdit(); self.cia_volta.setPlaceholderText("Companhia Aérea")
-        
-        # ---------- LÓGICA PARA GARANTIR QUE A DATA DE VOLTA SEJA SEMPRE APÓS A DATA DE IDA ----------
-        self.data_ida.dateChanged.connect(self.data_volta.setMinimumDate)
-        self.data_volta.setMinimumDate(self.data_ida.date())
-        
-        # --------- OUTROS INPUTS ----------
-        
-        self.somente_ida = QCheckBox("Somente Ida")
-        
-        self.bagagem = QCheckBox("Bagagem Despachada")
-        
+        self.aeroportos_lista = carregar_json("aeroportos.json")
         self.locale = QLocale(QLocale.Language.Portuguese, QLocale.Country.Brazil)
-        
-        self.valor = QLineEdit(); self.valor.setPlaceholderText("Valor da Passagem (R$)"); self.valor.textChanged.connect(self.formatar_valor)
 
-        self.resultado = QTextEdit(); self.resultado.setReadOnly(True)
-        
-        self.aeroporto = QLineEdit(); self.aeroporto.setPlaceholderText("Aeroporto")
-        
-        self.IATA = QLineEdit(); self.IATA.setPlaceholderText("IATA")
+        self.init_ui()
 
-        # -------- BOTÕES ----------
-        self.btn_gerar = QPushButton("✈️ Gerar Cotação"); self.btn_gerar.clicked.connect(self.gerar_cotacao)
-        
-        self.btn_copiar = QPushButton("📋 Copiar Texto"); self.btn_copiar.clicked.connect(self.copiar_texto); self.btn_copiar.setObjectName('btn_copiar')
-        
-        self.btn_adicionar = QPushButton("➕ Adicionar Aeroporto"); self.btn_adicionar.clicked.connect(self.salvar_novo_aeroporto)
-        
-        # --------- ORGANIZAÇÃO DO LAYOUT ----------
-        # ---------         ORIGEM        ---------- 
-        grid_layout.addWidget(QLabel('Origem:'), 0, 0) # Label Origem
-        grid_layout.addWidget(self.origem, 1, 0)      # ComboBox Origem   
-        grid_layout.addWidget(self.cia_ida, 2, 0)         # Companhia Aérea
-        grid_layout.addWidget(self.data_ida, 3, 0)    # Data de Ida
-        grid_layout.addWidget(self.hora_ida, 4, 0)    # Hora de Ida
-        grid_layout.addWidget(self.chegada_ida, 5, 0) # Chegada de Ida
-        grid_layout.addWidget(self.paradas_ida, 6, 0) # Paradas de Ida
-        
-        
-        # ---------         DESTINO       ----------
-        grid_layout.addWidget(QLabel('Destino:'), 0, 1)  # Label Destino
-        grid_layout.addWidget(self.destino, 1, 1)       # ComboBox Destino
-        grid_layout.addWidget(self.cia_volta, 2, 1)         # Companhia Aérea Volta
-        grid_layout.addWidget(self.data_volta, 3, 1)    # Data de Volta
-        grid_layout.addWidget(self.hora_volta, 4, 1)    # Hora de Volta
-        grid_layout.addWidget(self.chegada_volta, 5, 1) # Chegada de Volta
-        grid_layout.addWidget(self.paradas_volta, 6, 1) # Paradas de Volta
+    def init_ui(self):
 
-        # ---------         OUTROS        ----------
-        grid_layout.addWidget(self.somente_ida, 7, 0)     # Checkbox Somente Ida
-        grid_layout.addWidget(self.bagagem, 7, 1)         # Checkbox Bagagem Despachada
-        grid_layout.addWidget(self.valor, 8, 0, 1, 2)     # Valor da Passagem
-        grid_layout.addWidget(self.btn_gerar, 9, 0, 1, 2)      # Botão Gerar Cotação
-        grid_layout.addWidget(self.resultado, 10, 0, 1, 2) # Resultado da Cotação
-        grid_layout.addWidget(self.btn_copiar, 11, 0, 1, 2)    # Botão Copiar Texto
-        
-        # ---------         ADICIONAR AEROPORTO        ----------
-        grid_layout.addWidget(self.aeroporto, 12, 0, 1, 2) # Campo para adicionar novo aeroporto
-        grid_layout.addWidget(self.IATA, 13, 0, 1, 2)      # Campo para adicionar novo IATA
-        grid_layout.addWidget(self.btn_adicionar, 14, 0, 1, 2)  # Botão para adicionar novo aeroporto
+        self.setWindowTitle("✈️ Gerador de Cotações Aéreas")
+        self.setMinimumSize(400, 800)
 
-        self.layout.addLayout(grid_layout)
-        self.setLayout(self.layout)
+        main_layout = QVBoxLayout()
+        grid = QGridLayout()
+
+        # SEÇÕES
+        self.origem_box, self.origem_widgets = self.criar_secao_voo("")
+        self.destino_box, self.destino_widgets = self.criar_secao_voo("")
+
+        self.origem = self.origem_widgets["aeroporto"]
+        self.destino = self.destino_widgets["aeroporto"]
+
+        # CHECKBOX
+        self.somente_ida = QCheckBox("Somente Ida")
+        self.bagagem = QCheckBox("Bagagem Despachada")
+
+        # PASSAGEIROS
+        self.passageiros = QSpinBox()
+        self.passageiros.setRange(1, 10)
+        self.passageiros.setValue(1)
+
+        # VALOR
+        self.valor = QLineEdit()
+        self.valor.setPlaceholderText("Valor da Passagem (R$)")
+        self.valor.textChanged.connect(self.formatar_valor)
+
+        # RESULTADO
+        self.resultado = QTextEdit()
+        self.resultado.setReadOnly(True)
+
+        # BOTÕES
+        btn_gerar = QPushButton("✈️ Gerar Cotação")
+        btn_gerar.clicked.connect(self.gerar_cotacao)
+
+        btn_copiar = QPushButton("📋 Copiar Texto")
+        btn_copiar.setObjectName("btn_copiar")
+        btn_copiar.clicked.connect(self.copiar_texto)
+
+        # LAYOUT
+        grid.addWidget(self.origem_box, 0, 0)
+        grid.addWidget(self.destino_box, 0, 1)
+
+        grid.addWidget(self.somente_ida, 1, 0)
+        grid.addWidget(self.bagagem, 1, 1)
+
+        grid.addWidget(self.valor, 2, 0)
+        grid.addWidget(self.passageiros, 2, 1)
+
+        grid.addWidget(btn_gerar, 3, 0, 1, 2)
+        grid.addWidget(self.resultado, 4, 0, 1, 2)
+
+        # NOVO AEROPORTO
+        self.aeroporto_input = QLineEdit()
+        self.aeroporto_input.setPlaceholderText("Cidade/Aeroporto")
+
+        self.iata_input = QLineEdit()
+        self.iata_input.setPlaceholderText("IATA (3 letras)")
+
+        btn_add = QPushButton("➕ Novo Aeroporto")
+        btn_add.clicked.connect(self.salvar_novo_aeroporto)
+
+        grid.addWidget(self.aeroporto_input, 5, 0)
+        grid.addWidget(self.iata_input, 5, 1)
+        grid.addWidget(btn_add, 6, 0, 1, 2)
+
+        grid.addWidget(btn_copiar, 7, 0, 1, 2)
+
+        main_layout.addLayout(grid)
+        self.setLayout(main_layout)
+
+    # -------- SEÇÃO DE VOO --------
+
+    def criar_secao_voo(self, titulo):
+
+        box = QGroupBox(titulo)
+        layout = QGridLayout()
+
+        aeroporto = self.criar_combo_aeroporto()
+        cia = QLineEdit(placeholderText="Companhia Aérea")
+        data = self.criar_data_edit()
+        saida = QTimeEdit()
+        chegada = QTimeEdit()
+        paradas = self.criar_combo_paradas()
+
+        saida.setDisplayFormat("HH:mm")
+        chegada.setDisplayFormat("HH:mm")
+
+        widgets = [
+            ("Aeroporto:", aeroporto),
+            ("Cia:", cia),
+            ("Data:", data),
+            ("Saída:", saida),
+            ("Chegada:", chegada),
+            ("Paradas:", paradas),
+        ]
+
+        for i, (texto, widget) in enumerate(widgets):
+            layout.addWidget(QLabel(texto), i, 0)
+            layout.addWidget(widget, i, 1)
+
+        box.setLayout(layout)
+
+        return box, {
+            "aeroporto": aeroporto,
+            "cia": cia,
+            "data": data,
+            "saida": saida,
+            "chegada": chegada,
+            "paradas": paradas
+        }
+
+    # -------- COMPONENTES --------
+
+    def criar_combo_aeroporto(self):
+
+        combo = QComboBox()
+        combo.setEditable(True)
+        combo.addItems(self.aeroportos_lista)
+        combo.setCurrentIndex(-1)
+
+        comp = combo.completer()
+        comp.setFilterMode(Qt.MatchFlag.MatchContains)
+        comp.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
+
+        return combo
+
+    def criar_combo_paradas(self):
+
+        combo = QComboBox()
+        combo.addItems([
+            "Vôo direto",
+            "1 parada",
+            "2 paradas",
+            "3 ou mais paradas"
+        ])
+
+        return combo
+
+    def criar_data_edit(self):
+
+        data = QDateEdit()
+        data.setCalendarPopup(True)
+        data.setDate(QDate.currentDate())
+        data.setDisplayFormat("dd/MM/yyyy")
+
+        return data
+
+    # -------- AÇÕES --------
 
     def gerar_cotacao(self):
-        from modelos.aereo_model import Aereo
+
         cotacao = Aereo(
-            origem = self.origem.currentText(),
-            destino = self.destino.currentText(),
-            data_ida = self.data_ida.date().toString("dd/MM/yyyy"),
-            saida_ida = self.hora_ida.text(),
-            chegada_ida = self.chegada_ida.text(),
-            paradas_ida = self.paradas_ida.currentText(),
-            data_volta = self.data_volta.date().toString("dd/MM/yyyy"),
-            saida_volta = self.hora_volta.text(),
-            chegada_volta = self.chegada_volta.text(),
-            paradas_volta = self.paradas_volta.currentText(),
-            somente_ida = self.somente_ida.isChecked(),
-            valor = self.valor.text(),
-            cia_ida = self.cia_ida.text(),
-            cia_volta = self.cia_volta.text(),
-            bagagem = "Inclui bagagem de mão e bagagem despachada" if self.bagagem.isChecked() else "Inclui somente bagagem de mão (sem bagagem despachada)"
+            origem=self.origem.currentText(),
+            destino=self.destino.currentText(),
+            data_ida=self.origem_widgets["data"].date().toString("dd/MM/yyyy"),
+            saida_ida=self.origem_widgets["saida"].text(),
+            chegada_ida=self.origem_widgets["chegada"].text(),
+            paradas_ida=self.origem_widgets["paradas"].currentText(),
+            data_volta=self.destino_widgets["data"].date().toString("dd/MM/yyyy"),
+            saida_volta=self.destino_widgets["saida"].text(),
+            chegada_volta=self.destino_widgets["chegada"].text(),
+            paradas_volta=self.destino_widgets["paradas"].currentText(),
+            somente_ida=self.somente_ida.isChecked(),
+            valor=self.valor.text(),
+            cia_ida=self.origem_widgets["cia"].text(),
+            cia_volta=self.destino_widgets["cia"].text(),
+            quantidade_passageiros=self.passageiros.value(),
+            bagagem="Inclui bagagem de mão e bagagem despachada"
+            if self.bagagem.isChecked()
+            else "Inclui somente bagagem de mão"
         )
 
         self.resultado.setPlainText(cotacao.gerar_texto())
 
-
     def copiar_texto(self):
-        texto = self.resultado.toPlainText()
-        QApplication.clipboard().setText(texto)
+
+        QApplication.clipboard().setText(self.resultado.toPlainText())
         QMessageBox.information(self, "Copiado", "Texto copiado com sucesso!")
 
     def salvar_novo_aeroporto(self):
-        from utils.utils import salvar_aeroporto
-        cidade = self.aeroporto.text().strip()
-        iata = self.IATA.text().strip()
-        
-        if not cidade or not iata or len(iata) !=3:
-            QMessageBox.warning(self, 'ERRO', 'Preencha a cidade e um código IATA válido (03 letras).')
+
+        cidade = self.aeroporto_input.text().strip()
+        iata = self.iata_input.text().strip().upper()
+
+        if not cidade or len(iata) != 3:
+            QMessageBox.warning(self, "Erro", "Código IATA inválido.")
             return
-        
-        if salvar_aeroporto(cidade, iata, 'aeroportos.json'):
-            QMessageBox.information(self, "Sucesso", f"Aeroporto '{cidade.title()} ({iata.upper()})' adicionado!")
-            novo_texto = f"{cidade.title()} ({iata.upper()})"
-            self.origem.addItem(novo_texto)
-            self.destino.addItem(novo_texto)
-            self.aeroporto.clear()
-            self.IATA.clear()
-    
+
+        if salvar_aeroporto(cidade, iata, "aeroportos.json"):
+
+            texto = f"{cidade.title()} ({iata})"
+
+            self.origem.addItem(texto)
+            self.destino.addItem(texto)
+
+            self.aeroporto_input.clear()
+            self.iata_input.clear()
+
+            QMessageBox.information(self, "Sucesso", f"Aeroporto {texto} adicionado!")
+
     def formatar_valor(self):
-        texto = self.valor.text()
-        somente_numeros = re.sub(r'\D', '', texto)
-        
-        if not somente_numeros:
-            self.valor.blockSignals(True)
-            self.valor.setText('0,00')
-            self.valor.blockSignals(False)
+
+        numeros = re.sub(r"\D", "", self.valor.text())
+
+        if not numeros:
             return
-        
-        self.valor_puro = somente_numeros
-        
-        valor = int(somente_numeros) / 100
-        valor_formatado = self.locale.toCurrencyString(valor)
-        
+
+        valor = int(numeros) / 100
+        texto = self.locale.toCurrencyString(valor)
+
         self.valor.blockSignals(True)
-        self.valor.setText(valor_formatado)
+        self.valor.setText(texto)
         self.valor.blockSignals(False)
-        
-        self.valor.setCursorPosition(len(valor_formatado))
-        

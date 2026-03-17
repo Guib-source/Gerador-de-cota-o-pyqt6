@@ -13,7 +13,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sistema de Cotações")
-        self.setMinimumSize(400, 800)
+        self.setMinimumSize(400, 900)
 
         # Layout principal
         main_layout = QHBoxLayout()
@@ -53,7 +53,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    style_path = os.path.join(os.path.dirname(__file__), "styles", "style.qss")
+    style_path = os.path.join(os.path.dirname(__file__), "style.qss")
     with open(style_path, "r", encoding='utf-8') as f:
         app.setStyleSheet(f.read())
 

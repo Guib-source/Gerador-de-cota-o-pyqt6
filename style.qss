@@ -36,7 +36,7 @@ QCheckBox {
     color: black;
 }
 
-QComboBox, QLineEdit, QTextEdit, QDateEdit, QTimeEdit {
+QComboBox, QLineEdit, QTextEdit, QDateEdit, QTimeEdit, QSpinBox {
     background-color: white;
     padding: 5px;
     border: 1px solid #919191;
@@ -78,7 +78,7 @@ QPushButton#btn_sidebar:pressed {
 }
 
 /* Esconder botões de dropdown */ 
-QTimeEdit::up-button, QTimeEdit::down-button {
+QTimeEdit::up-button, QTimeEdit::down-button, QSpinBox::up-button, QSpinBox::down-button {
     width: 0;
     height: 0;
     border: none;

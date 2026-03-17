@@ -18,14 +18,13 @@ class Aereo:
     cia_ida: str = ""
     cia_volta: str = ""
     quantidade_passageiros: int = ""
-    divisao_pagamento: str = ""
 
     def gerar_texto(self) -> str:
         texto = (
             f"✈️ Segue sua cotação especial para a sua próxima viagem:\n\n"
             f"{self.origem} ➡️ {self.destino}\n"
             f"📅 IDA: {self.data_ida}\n"
-            f"✈️ CIA: {self.cia_ida} | Passageiros: {self.quantidade_passageiros}\n"
+            f"✈️ CIA: {self.cia_ida} | Passageiros: 0{self.quantidade_passageiros}\n"
             f"➡ Saída: {self.saida_ida}h | {self.paradas_ida}\n"
             f"➡ Chegada: {self.chegada_ida}h em {self.destino}\n\n"
         )
@@ -34,7 +33,7 @@ class Aereo:
             texto += (
                 f"{self.destino} ➡️ {self.origem}\n"
                 f"📅 VOLTA: {self.data_volta}\n"
-                f"✈️ CIA: {self.cia_volta} | Passageiros: {self.quantidade_passageiros}\n"
+                f"✈️ CIA: {self.cia_volta} | Passageiros: 0{self.quantidade_passageiros}\n"
                 f"➡ Saída: {self.saida_volta}h | {self.paradas_volta}\n"
                 f"➡ Chegada: {self.chegada_volta}h em {self.origem}\n\n"
                 f"💰 Valor: {self.valor} (ida e volta)\n"
@@ -44,7 +43,7 @@ class Aereo:
         else:
             texto += (
                 f"💰 Valor: R$ {self.valor} (somente ida)\n"
-                f"🧳 Bagagem: {self.bagagem}\n\n"
+                f"🧳 Bagagem: {self.bagagem}\n\n"             
                 f"Valores sujeitos à disponibilidade e alteração sem aviso prévio."
             )
 
